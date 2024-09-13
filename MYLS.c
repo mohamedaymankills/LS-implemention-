@@ -13,5 +13,15 @@ void list_dir(const char *path)
        		 perror("opendir");
   	    	 return;
 		}
+
+		while ((entry = readdir(dir)) != NULL)
+		{
+			if( strcoll(entry->d_name , ".") != 0 && strcoll(entry->d_name , "..") != 0 )
+			{
+				printf("%s\n",entry->d_name);
+			}
+		}
 	}
 
+
+	closedir(dir);
