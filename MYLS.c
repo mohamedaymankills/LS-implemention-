@@ -34,7 +34,7 @@ int main(int argc ,int **argv)
 {
 
     const char *path = (argc > 1) ? argv[1] : ".";
-    list_directory(path);
+    list_dir(path);
     return 0;
 
 
