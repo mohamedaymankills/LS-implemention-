@@ -2,6 +2,10 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <errno.h>
+
 
 void list_dir(const char *path)
 	{
@@ -20,8 +24,20 @@ void list_dir(const char *path)
 			{
 				printf("%s\n",entry->d_name);
 			}
+
 		}
+        closedir(dir);
+
 	}
 
+int main(int argc ,int **argv)
+{
 
-	closedir(dir);
+    const char *path = (argc > 1) ? argv[1] : ".";
+    list_directory(path);
+    return 0;
+
+
+
+
+}
