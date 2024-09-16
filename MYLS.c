@@ -24,12 +24,11 @@ int main(int argc, char *argv[]) {
 
     // Execute the corresponding option
     if (long_format) {
-        list_long(path);
+        list_long(path, show_all );  // Pass show_all flag
     } else if (sort_by_time) {
-        list_time(path);
+        list_time(path, show_all);  // Pass show_all flag
     } else {
-        // Pass show_all to list_all to determine whether to display hidden files
-        list_all(path, show_all);
+        list_all(path, show_all);   // Pass show_all flag
     }
 
     return 0;

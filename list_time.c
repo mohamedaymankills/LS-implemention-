@@ -18,7 +18,7 @@ int compare_mod_time(const void *a, const void *b) {
     return (file_b->mod_time - file_a->mod_time); // Descending order
 }
 
-void list_time(const char *path) {
+void list_time(const char *path, int show_hidden) {
     DIR *dir;
     struct dirent *entry;
     struct file_info *files = NULL;
@@ -37,6 +37,16 @@ void list_time(const char *path) {
 
     // Read and store directory entries
     while ((entry = readdir(dir)) != NULL) {
+        // Skip entries that are "." or ".."
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+            continue;
+        }
+
+        // Skip hidden files unless show_hidden is true
+        if (!show_hidden && entry->d_name[0] == '.') {
+            continue;
+        }
+
         // Get file modification time
         struct stat file_stat;
         if (stat(entry->d_name, &file_stat) == -1) {
