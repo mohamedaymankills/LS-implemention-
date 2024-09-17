@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include "color.h" // Include the colors header
 
 // Structure to hold file information
 struct file_info {
@@ -24,6 +26,7 @@ void list_time(const char *path, int show_hidden) {
     struct file_info *files = NULL;
     int file_count = 0;
     int capacity = 10;
+    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal
 
     // Allocate initial memory for storing file information
     files = malloc(capacity * sizeof(struct file_info));
@@ -69,7 +72,18 @@ void list_time(const char *path, int show_hidden) {
 
     // Print files
     for (int i = 0; i < file_count; i++) {
-        printf("%s\n", files[i].name);
+        if (color_output) {
+            // Print with color
+            struct stat file_stat;
+            if (stat(files[i].name, &file_stat) != -1) {
+                print_colored(files[i].name, &file_stat);
+                printf("\n");
+            } else {
+                printf("%s\n", files[i].name);
+            }
+        } else {
+            printf("%s\n", files[i].name);
+        }
         free(files[i].name);
     }
 

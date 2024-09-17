@@ -6,11 +6,14 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
+#include <unistd.h>
+#include "color.h" // Include the colors header
 
-void list_long(const char *path , int show_hidden) {
+void list_long(const char *path, int show_hidden) {
     DIR *dir;
     struct dirent *entry;
     struct stat file_stat;
+    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal
 
     dir = opendir(path);
     if (dir == NULL) {
@@ -22,12 +25,12 @@ void list_long(const char *path , int show_hidden) {
         // Skip entries that are "." or ".."
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
             continue;
-          }  
+        }
+
         // Skip hidden files unless show_hidden is true
         if (!show_hidden && entry->d_name[0] == '.') {
             continue;
-        }            
-        
+        }
 
         // Get the file status
         if (stat(entry->d_name, &file_stat) == -1) {
@@ -64,7 +67,12 @@ void list_long(const char *path , int show_hidden) {
         printf(" %s", time_str);
 
         // File name
-        printf(" %s\n", entry->d_name);
+        if (color_output) {
+            print_colored(entry->d_name, &file_stat);
+            printf("\n");
+        } else {
+            printf(" %s\n", entry->d_name );
+        }
     }
 
     closedir(dir);

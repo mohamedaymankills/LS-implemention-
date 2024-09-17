@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <utime.h>
+#include "color.h" // Include the colors header
 
 // Structure to hold file information
 struct file_info {
@@ -25,6 +26,7 @@ void list_access(const char *path, int show_all) {
     DIR *dir;
     struct dirent *entry;
     struct file_info *files = NULL;
+    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal
     int file_count = 0;
     int capacity = 10;
 
@@ -72,7 +74,17 @@ void list_access(const char *path, int show_all) {
 
     // Print files
     for (int i = 0; i < file_count; i++) {
-        printf("%s\n", files[i].name);
+        if (color_output) {
+            struct stat file_stat;
+            if (stat(files[i].name, &file_stat) == -1) {
+                perror("stat");
+                continue;
+            }
+            print_colored(files[i].name, &file_stat);
+        } else {
+            printf("%s", files[i].name);
+        }
+        printf("\n");
         free(files[i].name);
     }
 
