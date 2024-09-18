@@ -1,16 +1,21 @@
-// list_directory.c
-#include <stdio.h>
-#include <sys/stat.h>
-#include <unistd.h> // Include unistd.h for isatty and STDOUT_FILENO
-#include "color.h" // Include the colors header for color support
+/******************************* Name    : list_directory.c        *******************************/   
+/******************************* Author  : Mohamed Ayman           *******************************/  
+/******************************* Date    : 10-9-2024               *******************************/  
+/******************************* version : 0.3.1                   *******************************/ 
 
+#include <stdio.h>        // Standard I/O functions
+#include <sys/stat.h>     // File status functions and macros
+#include <unistd.h>       // POSIX operating system API, including isatty() and STDOUT_FILENO
+#include "color.h"        // Include the colors header for color support
+
+// Function to list the specified directory
 void list_directory(const char *path) {
-    struct stat path_stat;
-    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal
+    struct stat path_stat;  // Structure to hold file status information
+    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal to enable color
 
     // Get information about the specified path
     if (stat(path, &path_stat) == -1) {
-        perror("stat");
+        perror("stat"); // Print error if file status cannot be retrieved
         return;
     }
 

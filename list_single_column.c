@@ -1,8 +1,13 @@
-// list_single_column.c
+/******************************* Name    : list_single_column.c    *******************************/   
+/******************************* Author  : Mohamed Ayman           *******************************/  
+/******************************* Date    : 10-9-2024               *******************************/  
+/******************************* version : 0.3.1                   *******************************/ 
+
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include "color.h" // Include the colors header
 
 void list_single_column(const char *path, int show_all) {

@@ -1,4 +1,8 @@
-// list_inode.c
+/******************************* Name    : list_inode.c            *******************************/   
+/******************************* Author  : Mohamed Ayman           *******************************/  
+/******************************* Date    : 10-9-2024               *******************************/  
+/******************************* version : 0.3.1                   *******************************/ 
+
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +14,7 @@
 
 #define INITIAL_CAPACITY 10
 
+// Structure to hold file entries with inode and name
 typedef struct {
     ino_t inode;
     char name[NAME_MAX];
