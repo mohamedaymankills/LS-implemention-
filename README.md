@@ -44,7 +44,7 @@ Run the myls command with various options to customize the output:
 ```bash
 ./myls [options] [path]
 ```
-If no path is provided, myls defaults to the current directory.
+`If` no path is provided, myls defaults to the current directory.
 
 ## Options
     -a: Include hidden files (those starting with a dot).
