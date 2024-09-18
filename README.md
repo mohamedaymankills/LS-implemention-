@@ -47,8 +47,8 @@ Run the myls command with various options to customize the output:
 If no path is provided, myls defaults to the current directory.
 
 ## Options
-`-a`: Include hidden files (those starting with a dot). < br / >
-`-d`: List directories themselves, not their contents.
+`-a`: Include hidden files (those starting with a dot).\
+`-d`: List directories themselves, not their contents.<br/>
 `-i`: Print the index number (inode) of each file.
 `-l`: Use a long listing format, which includes detailed file information.
 `-1`: List one file per line.
