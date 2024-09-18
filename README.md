@@ -9,7 +9,10 @@ Sorting: Sort files by name, modification time, access time, and creation time.\
 Formatting: List files in long format, single column, or unsorted.\
 Hidden Files: Option to include or exclude hidden files.\
 Color Output: Supports colorized output for easier file type differentiation.\
-Multi options : ./MYLS -ladtcufi1
+Multi options :
+```bash
+./MYLS -ladtcufi1
+```
 
 ## Table of Contents
 Installation
