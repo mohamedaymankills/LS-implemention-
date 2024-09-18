@@ -4,11 +4,12 @@
 MYLS is a custom implementation of the Unix ls command, designed to provide various options for listing directory contents. This project demonstrates proficiency in C programming, file system interactions, and command-line interface design. MYLS supports several listing formats and sorting options, allowing users to customize the output to their needs.
 
 ## Features
-File Listing: Display files and directories with various formatting options.
-Sorting: Sort files by name, modification time, access time, and creation time.
-Formatting: List files in long format, single column, or unsorted.
-Hidden Files: Option to include or exclude hidden files.
-Color Output: Supports colorized output for easier file type differentiation.
+File Listing: Display files and directories with various formatting options.\
+Sorting: Sort files by name, modification time, access time, and creation time.\
+Formatting: List files in long format, single column, or unsorted.\
+Hidden Files: Option to include or exclude hidden files.\
+Color Output: Supports colorized output for easier file type differentiation.\
+Multi options : ./MYLS -ladtcufi1
 
 ## Table of Contents
 Installation
