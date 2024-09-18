@@ -48,15 +48,15 @@ If no path is provided, myls defaults to the current directory.
 
 ## Options
 `-a`: Include hidden files (those starting with a dot).\
-`-d`: List directories themselves, not their contents.<br/>
-`-i`: Print the index number (inode) of each file.
-`-l`: Use a long listing format, which includes detailed file information.
-`-1`: List one file per line.
-`-t`: Sort files by modification time.
-`-u`: Sort files by last access time.
-`-c`: Sort files by creation time (if supported).
-`-f`: Do not sort; list entries as they appear.
-`-h`: Show the help message and exit.
+`-d`: List directories themselves, not their contents.\
+`-i`: Print the index number (inode) of each file.\
+`-l`: Use a long listing format, which includes detailed file information.\
+`-1`: List one file per line.\
+`-t`: Sort files by modification time.\
+`-u`: Sort files by last access time.\
+`-c`: Sort files by creation time (if supported).\
+`-f`: Do not sort; list entries as they appear.\
+`-h`: Show the help message and exit.\
 
 ## Source Files
 The MYLS project consists of several source files:
