@@ -1,63 +1,105 @@
-// main.c
+/******************************* Name    : MYLS.c                  *******************************/   
+/******************************* Author  : Mohamed Ayman           *******************************/  
+/******************************* Date    : 10-9-2024               *******************************/  
+/******************************* version : 0.3.1                   *******************************/  
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <getopt.h>
 #include "list.h"
 
-int main(int argc, char *argv[]) {
-    int show_all = 0;        // Flag for the -a option
-    int long_format = 0;     // Flag for the -l option
-    int sort_by_time = 0;    // Flag for the -t option
-    int sort_by_creation = 0; // Flag for the -c option
-    int sort_by_access = 0;  // Flag for the -u option
-    int show_inode = 0;      // Flag for the -i option
-    int list_dir_name = 0;   // Flag for the -d option
-    int no_sort = 0;         // Flag for the -f option
-    int single_column = 0;   // Flag for the -1 option
-    const char *path = ".";  // Default path is the current directory
 
-    // Parse command-line arguments
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-a") == 0) {
-            show_all = 1;  // Enable showing hidden files
-        } else if (strcmp(argv[i], "-l") == 0) {
-            long_format = 1;  // Enable long listing format
-        } else if (strcmp(argv[i], "-t") == 0) {
-            sort_by_time = 1;  // Enable sorting by modification time
-        } else if (strcmp(argv[i], "-c") == 0) {
-            sort_by_creation = 1;  // Enable sorting by creation time
-        } else if (strcmp(argv[i], "-u") == 0) {
-            sort_by_access = 1;  // Enable sorting by access time
-        } else if (strcmp(argv[i], "-i") == 0) {
-            show_inode = 1;  // Enable displaying inode numbers
-        } else if (strcmp(argv[i], "-d") == 0) {
-            list_dir_name = 1;  // Enable listing directory names only
-        } else if (strcmp(argv[i], "-f") == 0) {
-            no_sort = 1;  // Enable no sorting and showing all files
-        } else if (strcmp(argv[i], "-1") == 0) {
-            single_column = 1;  // Enable single column listing
-        } else {
-            path = argv[i];  // Treat other arguments as the directory path
+
+void print_usage() {
+    printf("Usage: myls [options] [path]\n");
+    printf("Options:\n");
+    printf("  -a       Include hidden files\n");
+    printf("  -d       List directories themselves, not their contents\n");
+    printf("  -i       Print the index number of each file\n");
+    printf("  -l       Use a long listing format\n");
+    printf("  -1       List one file per line\n");
+    printf("  -t       Sort by modification time\n");
+    printf("  -u       Sort by last access time\n");
+    printf("  -c       Sort by creation time (if supported)\n");
+    printf("  -f       Do not sort, list entries as they appear\n");
+    printf("  -h       Show this help message\n");
+}
+
+int main(int argc, char *argv[]) {
+    int opt;
+    int show_all = 0;           // -a
+    int list_directory_only = 0;// -d
+    int show_inode = 0;         // -i
+    int long_listing = 0;       // -l
+    int single_column = 0;      // -1
+    int sort_by_time = 0;       // -t
+    int sort_by_access = 0;     // -u
+    int sort_by_creation = 0;   // -c
+    int unsorted = 0;           // -f
+    char *path = ".";           // Default path is current directory
+
+    // Parse options
+    while ((opt = getopt(argc, argv, "adil1tucfh")) != -1) {
+        switch (opt) {
+            case 'a':
+                show_all = 1;
+                break;
+            case 'd':
+                list_directory_only = 1;
+                break;
+            case 'i':
+                show_inode = 1;
+                break;
+            case 'l':
+                long_listing = 1;
+                break;
+            case '1':
+                single_column = 1;
+                break;
+            case 't':
+                sort_by_time = 1;
+                break;
+            case 'u':
+                sort_by_access = 1;
+                break;
+            case 'c':
+                sort_by_creation = 1;
+                break;
+            case 'f':
+                unsorted = 1;
+                break;
+            case 'h':
+                print_usage();
+                exit(EXIT_SUCCESS);
+            default:
+                print_usage();
+                exit(EXIT_FAILURE);
         }
     }
 
-    // Execute the corresponding option
-    if (single_column) {
-        list_single_column(path, show_all);
-    } else if (no_sort) {
-        list_unsorted(path);
-    } else if (list_dir_name) {
+    // Get the path argument if provided
+    if (optind < argc) {
+        path = argv[optind];
+    }
+
+    // Execute the appropriate listing function based on options
+    if (list_directory_only) {
         list_directory(path);
-    } else if (long_format) {
-        list_long(path, show_all);
-    } else if (sort_by_creation) {
-        list_creation(path, show_all);
-    } else if (sort_by_access) {
-        list_access(path, show_all);
-    } else if (sort_by_time) {
-        list_time(path, show_all);
     } else if (show_inode) {
         list_inode(path, show_all);
+    } else if (long_listing) {
+        list_long(path, show_all);
+    } else if (single_column) {
+        list_single_column(path, show_all);
+    } else if (sort_by_time) {
+        list_time(path, show_all);
+    } else if (sort_by_access) {
+        list_access(path, show_all);
+    } else if (sort_by_creation) {
+        list_creation(path, show_all);
+    } else if (unsorted) {
+        list_unsorted(path);
     } else {
+        // Default: list all files
         list_all(path, show_all);
     }
 

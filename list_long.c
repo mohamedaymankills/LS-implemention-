@@ -7,7 +7,9 @@
 #include <grp.h>
 #include <time.h>
 #include <unistd.h>
-#include "color.h" // Include the colors header
+#include <stdlib.h>
+#include "color.h"   // Include the colors header
+#include "sorting.h" // Include the sorting header
 
 void list_long(const char *path, int show_hidden) {
     DIR *dir;
@@ -21,6 +23,9 @@ void list_long(const char *path, int show_hidden) {
         return;
     }
 
+    // Collect directory entries
+    char **entries = NULL;
+    int num_entries = 0;
     while ((entry = readdir(dir)) != NULL) {
         // Skip entries that are "." or ".."
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
@@ -32,8 +37,31 @@ void list_long(const char *path, int show_hidden) {
             continue;
         }
 
+        // Allocate memory for entries
+        entries = realloc(entries, sizeof(char *) * (num_entries + 1));
+        if (entries == NULL) {
+            perror("realloc");
+            closedir(dir);
+            return;
+        }
+
+        // Duplicate the entry name and add to the list
+        entries[num_entries] = strdup(entry->d_name);
+        if (entries[num_entries] == NULL) {
+            perror("strdup");
+            closedir(dir);
+            return;
+        }
+        num_entries++;
+    }
+
+    // Sort the entries using case-insensitive comparison
+    sort_entries(entries, num_entries);
+
+    // Print the sorted entries in long format
+    for (int i = 0; i < num_entries; i++) {
         // Get the file status
-        if (stat(entry->d_name, &file_stat) == -1) {
+        if (stat(entries[i], &file_stat) == -1) {
             perror("stat");
             continue;
         }
@@ -56,7 +84,7 @@ void list_long(const char *path, int show_hidden) {
         // Owner and group
         struct passwd *pw = getpwuid(file_stat.st_uid);
         struct group *gr = getgrgid(file_stat.st_gid);
-        printf(" %s %s", pw->pw_name, gr->gr_name);
+        printf(" %s %s", pw ? pw->pw_name : "-", gr ? gr->gr_name : "-");
 
         // File size
         printf(" %5ld", file_stat.st_size);
@@ -68,13 +96,16 @@ void list_long(const char *path, int show_hidden) {
 
         // File name
         if (color_output) {
-            print_colored(entry->d_name, &file_stat);
-            printf("\n");
+            print_colored(entries[i], &file_stat);
         } else {
-            printf(" %s\n", entry->d_name );
+            printf(" %s", entries[i]);
         }
+        printf("\n");
+        free(entries[i]);  // Free the duplicated string
     }
 
+    // Clean up
+    free(entries);
     closedir(dir);
 }
 

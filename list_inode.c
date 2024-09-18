@@ -5,21 +5,67 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "color.h" // Include the colors header
+#include <limits.h>
+#include <ctype.h>
+
+#define INITIAL_CAPACITY 10
+
+typedef struct {
+    ino_t inode;
+    char name[NAME_MAX];
+} FileEntry;
+
+// Convert a string to lowercase
+void to_lowercase(char *str) {
+    for (char *p = str; *p; ++p) {
+        *p = tolower((unsigned char)*p);
+    }
+}
+
+// Comparator function for qsort, case-insensitive
+int compare_entries(const void *a, const void *b) {
+    const FileEntry *entry1 = (const FileEntry *)a;
+    const FileEntry *entry2 = (const FileEntry *)b;
+    char name1[NAME_MAX];
+    char name2[NAME_MAX];
+
+    // Make copies of the names to convert to lowercase
+    strncpy(name1, entry1->name, NAME_MAX);
+    strncpy(name2, entry2->name, NAME_MAX);
+    name1[NAME_MAX - 1] = '\0';
+    name2[NAME_MAX - 1] = '\0';
+
+    to_lowercase(name1);
+    to_lowercase(name2);
+
+    // Compare names case-insensitively
+    return strcmp(name1, name2);
+}
 
 void list_inode(const char *path, int show_all) {
     DIR *dir;
     struct dirent *entry;
-    int color_output = isatty(STDOUT_FILENO); // Check if output is a terminal
+    struct stat file_stat;
+    FileEntry *entries = NULL;
+    size_t capacity = INITIAL_CAPACITY;
+    size_t size = 0;
+
+    // Allocate initial memory for entries
+    entries = malloc(capacity * sizeof(FileEntry));
+    if (entries == NULL) {
+        perror("malloc");
+        return;
+    }
 
     // Open the directory
     dir = opendir(path);
     if (dir == NULL) {
         perror("opendir");
+        free(entries);
         return;
     }
 
-    // Read and print directory entries with their inode numbers
+    // Read directory entries and store them
     while ((entry = readdir(dir)) != NULL) {
         // Skip entries that are "." or ".."
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
@@ -31,20 +77,46 @@ void list_inode(const char *path, int show_all) {
             continue;
         }
 
-        if (color_output) {
-            struct stat file_stat;
-            if (stat(entry->d_name, &file_stat) == -1) {
-                perror("stat");
-                continue;
+        // Allocate more space if necessary
+        if (size >= capacity) {
+            capacity *= 2;
+            entries = realloc(entries, capacity * sizeof(FileEntry));
+            if (entries == NULL) {
+                perror("realloc");
+                closedir(dir);
+                return;
             }
-            print_colored(entry->d_name, &file_stat);
-            printf("\n");
-        } else {
-            printf("%lu %s\n", entry->d_ino, entry->d_name); // Print inode number and file name without color
         }
+
+        // Construct the full path to the file
+        char full_path[PATH_MAX];
+        snprintf(full_path, sizeof(full_path), "%s/%s", path, entry->d_name);
+
+        // Get file status
+        if (stat(full_path, &file_stat) == -1) {
+            perror("stat");
+            continue;
+        }
+
+        // Store the entry
+        entries[size].inode = file_stat.st_ino;
+        strncpy(entries[size].name, entry->d_name, NAME_MAX);
+        entries[size].name[NAME_MAX - 1] = '\0'; // Ensure null termination
+        size++;
     }
 
     // Close the directory
     closedir(dir);
+
+    // Sort entries alphabetically by filename, case-insensitively
+    qsort(entries, size, sizeof(FileEntry), compare_entries);
+
+    // Print the sorted entries
+    for (size_t i = 0; i < size; i++) {
+        printf("%lu %s\n", entries[i].inode, entries[i].name);
+    }
+
+    // Free allocated memory
+    free(entries);
 }
 
