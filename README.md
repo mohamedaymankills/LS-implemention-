@@ -77,18 +77,14 @@ utils.c: Contains utility functions such as converting strings to lowercase and 
 ## Listing Formats
 
      Long Format (-l): Provides detailed information about each file, including permissions, number of links, owner, group, size, and modification time.
-
      Single Column (-1): Displays one file per line, making it easier to read long lists of files.
+     Unsorted (-f): Displays files in the order they appear in the directory, without sorting.
 
-    Unsorted (-f): Displays files in the order they appear in the directory, without sorting.
+## Sorting Options
 
-    Sorting Options
     By Name: Default sorting by file name, case-insensitive.
- 
     By Modification Time (-t): Sorts files by their last modification time, with the most recently modified files appearing first.
-
     By Access Time (-u): Sorts files by their last access time.
-
     By Creation Time (-c): Sorts files by their creation time (if supported by the file system).
 
 ## Color Output
