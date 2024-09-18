@@ -47,16 +47,16 @@ Run the myls command with various options to customize the output:
 If no path is provided, myls defaults to the current directory.
 
 ## Options
--a: Include hidden files (those starting with a dot).
--d: List directories themselves, not their contents.
--i: Print the index number (inode) of each file.
--l: Use a long listing format, which includes detailed file information.
--1: List one file per line.
--t: Sort files by modification time.
--u: Sort files by last access time.
--c: Sort files by creation time (if supported).
--f: Do not sort; list entries as they appear.
--h: Show the help message and exit.
+    -a: Include hidden files (those starting with a dot).
+    -d: List directories themselves, not their contents.
+    -i: Print the index number (inode) of each file.
+    -l: Use a long listing format, which includes detailed file information.
+    -1: List one file per line.
+    -t: Sort files by modification time.
+    -u: Sort files by last access time.
+    -c: Sort files by creation time (if supported).
+    -f: Do not sort; list entries as they appear.
+    -h: Show the help message and exit.
 
 ## Source Files
 The MYLS project consists of several source files:
@@ -74,25 +74,26 @@ utils.c: Contains utility functions such as converting strings to lowercase and 
 
 ## Functionality
 
-Listing Formats
+## Listing Formats
 
-Long Format (-l): Provides detailed information about each file, including permissions, number of links, owner, group, size, and modification time.
+     Long Format (-l): Provides detailed information about each file, including permissions, number of links, owner, group, size, and modification time.
 
-Single Column (-1): Displays one file per line, making it easier to read long lists of files.
+     Single Column (-1): Displays one file per line, making it easier to read long lists of files.
 
-Unsorted (-f): Displays files in the order they appear in the directory, without sorting.
+    Unsorted (-f): Displays files in the order they appear in the directory, without sorting.
 
-Sorting Options
-By Name: Default sorting by file name, case-insensitive.
+    Sorting Options
+    By Name: Default sorting by file name, case-insensitive.
+ 
+    By Modification Time (-t): Sorts files by their last modification time, with the most recently modified files appearing first.
 
-By Modification Time (-t): Sorts files by their last modification time, with the most recently modified files appearing first.
+    By Access Time (-u): Sorts files by their last access time.
 
-By Access Time (-u): Sorts files by their last access time.
+    By Creation Time (-c): Sorts files by their creation time (if supported by the file system).
 
-By Creation Time (-c): Sorts files by their creation time (if supported by the file system).
-
-Color Output
-The MYLS implementation supports colorized output to differentiate between file types. Colors are enabled by default when outputting to a terminal. The color settings are managed in color.c, which includes functions to determine the appropriate color based on file type and print file names in color.
+## Color Output
+     The MYLS implementation supports colorized output to differentiate between file types. Colors are enabled by default when outputting to a terminal. The color settings are 
+     managed in color.c, which includes functions to determine the appropriate color based on file type and print file names in color.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
